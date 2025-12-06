@@ -134,7 +134,7 @@ function sendEmails(
 
 function sendConfirmEmail() {
 	sendEmails(
-		"Bevestiging betaling Shawano's Bar"       ,
+		"Bevestiging betaling Shawano's Bar"          ,
 		undefined,
 		"Confirmation Email Sent",
 		shouldSendConfirmation,
