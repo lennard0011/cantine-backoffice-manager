@@ -17,17 +17,33 @@ function onOpen() {
 }
 
 function sendPaymentEmails() {
-	sendEmails("Betaalverzoek Shawano's Bar", undefined, undefined, undefined, [
-		{ PAYMENT_INFO: getPaymentLinkText },
-		{ CONSUMPTION_INFO: getConsumptionInfo },
-	], false, false);
+	sendEmails(
+		"Betaalverzoek Shawano's Bar",
+		undefined,
+		undefined,
+		undefined,
+		[
+			{ PAYMENT_INFO: getPaymentLinkText },
+			{ CONSUMPTION_INFO: getConsumptionInfo },
+		],
+		false,
+		false,
+	);
 }
 
 function dryRunPaymentEmails() {
-	sendEmails("Betaalverzoek Shawano's Bar", undefined, undefined, undefined, [
-		{ PAYMENT_INFO: getPaymentLinkText },
-		{ CONSUMPTION_INFO: getConsumptionInfo },
-	], false, true);
+	sendEmails(
+		"Betaalverzoek Shawano's Bar",
+		undefined,
+		undefined,
+		undefined,
+		[
+			{ PAYMENT_INFO: getPaymentLinkText },
+			{ CONSUMPTION_INFO: getConsumptionInfo },
+		],
+		false,
+		true,
+	);
 }
 
 function getConsumptionInfo(user) {
