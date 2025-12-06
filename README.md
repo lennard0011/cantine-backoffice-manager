@@ -81,15 +81,39 @@ A Google Apps Script solution for managing canteen/bar payments and automated em
 - **Confirmations**: Sent when `Bedrag voldaan` is TRUE and no confirmation sent yet
 - **Reminders**: Sent if payment request was sent 7+ days ago and balance remains unpaid
 
+## Testing
+
+The project includes comprehensive unit tests using Node.js test runner.
+
+### Running Tests
+
+```bash
+# Run all tests
+npm test
+
+# Run tests in watch mode
+npm run test:watch
+```
+
+### Test Coverage
+
+- **Unit Tests**: All pure utility functions (date parsing, data transformation, filtering logic)
+- **Integration Tests**: End-to-end workflows for CSV import and email filtering
+
 ## Project Structure
 
 ```
 cantine-backoffice-manager/
 ├── app/
 │   ├── main.js                  # Email sending and menu functions
-│   └── handle-transactions.js   # CSV import and transaction processing
+│   ├── handle-transactions.js   # CSV import and transaction processing
+│   └── utils.js                 # Pure utility functions (testable)
+├── test/
+│   ├── utils.test.js            # Unit tests for utility functions
+│   └── integration.test.js      # Integration tests
 ├── appsscript.json              # Apps Script configuration
 ├── .clasp.json                  # clasp deployment configuration
+├── package.json                 # Node.js configuration
 └── README.md
 ```
 
