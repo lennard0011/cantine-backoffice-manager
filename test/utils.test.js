@@ -8,7 +8,9 @@ import {
   shouldSendPaymentRequest,
   shouldSendReminder,
   shouldSendConfirmation,
-  getConditionalMailAddition
+  getConditionalMailAddition,
+  shouldIncludePaymentLink,
+  getPaymentLinkText
 } from '../app/utils.js';
 
 describe('dateStringToDate', () => {
@@ -266,5 +268,38 @@ describe('getConditionalMailAddition', () => {
     };
     const result = getConditionalMailAddition(user);
     assert.strictEqual(result, '');
+  });
+});
+
+describe('shouldIncludePaymentLink', () => {
+  it('should return true for amounts >= €20', () => {
+    assert.strictEqual(shouldIncludePaymentLink('€ 20,00'), true);
+    assert.strictEqual(shouldIncludePaymentLink('€ 50,00'), true);
+    assert.strictEqual(shouldIncludePaymentLink('€ 100,00'), true);
+  });
+
+  it('should return false for amounts < €20', () => {
+    assert.strictEqual(shouldIncludePaymentLink('€ 19,99'), false);
+    assert.strictEqual(shouldIncludePaymentLink('€ 10,00'), false);
+    assert.strictEqual(shouldIncludePaymentLink('€ 5,50'), false);
+  });
+
+  it('should handle amounts without spaces', () => {
+    assert.strictEqual(shouldIncludePaymentLink('€20,00'), true);
+    assert.strictEqual(shouldIncludePaymentLink('€15,00'), false);
+  });
+});
+
+describe('getPaymentLinkText', () => {
+  it('should return empty string for amounts >= €20', () => {
+    const user = { 'Totaal': '€ 50,00' };
+    assert.strictEqual(getPaymentLinkText(user), '');
+  });
+
+  it('should return info message for amounts < €20', () => {
+    const user = { 'Totaal': '€ 15,00' };
+    const result = getPaymentLinkText(user);
+    assert.ok(result.includes('update'));
+    assert.ok(result.includes('Geen betaling vereist'));
   });
 });

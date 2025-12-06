@@ -61,3 +61,13 @@ export function getConditionalMailAddition(user) {
   }
   return returnString;
 }
+
+export function shouldIncludePaymentLink(amountString) {
+  const amount = parseFloat(amountString.replace('€', '').trim().replace(',', '.'));
+  return amount >= 20;
+}
+
+export function getPaymentLinkText(user) {
+  const shouldInclude = shouldIncludePaymentLink(user['Totaal']);
+  return shouldInclude ? '' : 'Dit is een update van uw saldo. Geen betaling vereist op dit moment.';
+}

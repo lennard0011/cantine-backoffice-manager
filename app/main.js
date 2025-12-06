@@ -7,11 +7,20 @@ const EMAIL_SENT_COL = "Email Sent";
 function onOpen() {
   const ui = SpreadsheetApp.getUi();
   ui.createMenu('Mail Merge')
-    .addItem('Send Emails', 'sendEmails')
+    .addItem('Send Emails', 'sendPaymentEmails')
     .addItem('Send Confirmation Email', 'sendConfirmEmail')
     .addItem('Send Reminder Email', 'sendReminderEmail')
     .addItem('Handle transactions', 'importCsvFilesFromFolder')
     .addToUi();
+}
+
+function sendPaymentEmails() {
+  function getPaymentLinkInfo(user) {
+    const amountString = user['Totaal'];
+    const amount = parseFloat(amountString.replace('€', '').trim().replace(',', '.'));
+    return amount >= 20 ? '' : 'Dit is een update van uw saldo. Geen betaling vereist op dit moment.';
+  }
+  sendEmails('Betaalverzoek Shawano\'s Bar', undefined, undefined, undefined, [{ 'PAYMENT_INFO': getPaymentLinkInfo }])
 }
 
 function dateStringToDate(dateString) {
@@ -26,7 +35,7 @@ function dateStringToDate(dateString) {
  * @param {string} subjectLine (optional) for the email draft message
  * @param {Sheet} sheet to read data from
 */
-function sendEmails(subjectLine = 'Betaalverzoek Shawano\'s Bar', sheet = SpreadsheetApp.getActive().getSheetByName('Leden'), emailColumn = EMAIL_SENT_COL, userFilter = (row) => true, conditionalMailAddition = [], reminder) {
+function sendEmails(subjectLine, sheet = SpreadsheetApp.getActive().getSheetByName('Leden'), emailColumn = EMAIL_SENT_COL, userFilter = (row) => true, conditionalMailAddition = [], reminder) {
   // option to skip browser prompt if you want to use this code in other projects
   if (!subjectLine) {
     subjectLine = Browser.inputBox("Mail Merge",
@@ -213,5 +222,10 @@ function sendConfirmEmail() {
 }
 
 function sendReminderEmail() {
-  sendEmails('Herinnering Betaalverzoek Shawano\'s Bar', undefined, undefined, undefined, undefined, true)
+  function getPaymentLinkInfo(user) {
+    const amountString = user['Totaal'];
+    const amount = parseFloat(amountString.replace('€', '').trim().replace(',', '.'));
+    return amount >= 20 ? '' : 'Dit is een update van uw saldo. Geen betaling vereist op dit moment.';
+  }
+  sendEmails('Herinnering Betaalverzoek Shawano\'s Bar', undefined, undefined, undefined, [{ 'PAYMENT_INFO': getPaymentLinkInfo }], true)
 }
