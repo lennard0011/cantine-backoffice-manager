@@ -1,4 +1,5 @@
 #!/bin/sh
-npm run lint
+cd "$(dirname "$0")/.."
 npm run format
+npm run lint
 npm test
