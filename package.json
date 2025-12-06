@@ -7,7 +7,8 @@
 		"test:watch": "node --test --watch",
 		"format": "npx @biomejs/biome format --write .",
 		"lint": "npx @biomejs/biome lint --write .",
-		"prepare": "copy .husky\\pre-commit .git\\hooks\\pre-commit"
+		"prepare": "copy .husky\\pre-commit .git\\hooks\\pre-commit",
+		"deploy": "clasp push"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.3.8"
