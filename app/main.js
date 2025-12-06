@@ -14,7 +14,30 @@ function onOpen() {
 function sendPaymentEmails() {
 	sendEmails("Betaalverzoek Shawano's Bar", undefined, undefined, undefined, [
 		{ PAYMENT_INFO: getPaymentLinkText },
+		{ CONSUMPTION_INFO: getConsumptionInfo },
 	]);
+}
+
+function getConsumptionInfo(user) {
+	const lijstSheet = SpreadsheetApp.getActive().getSheetByName("Lijst");
+	if (!lijstSheet) return "";
+
+	const data = lijstSheet.getDataRange().getDisplayValues();
+	const headers = data[0];
+	const nameCol = 1; // Column B (0-indexed)
+	const usageCol = 3; // Column D (0-indexed)
+
+	const topic1 = headers[5] || "Soda"; // F1
+	const topic2 = headers[6] || "Beer"; // G1
+
+	for (let i = 1; i < data.length; i++) {
+		if (data[i][nameCol] === user["Naam"]) {
+			const usage1 = data[i][5] || "0";
+			const usage2 = data[i][6] || "0";
+			return `${topic1}: ${usage1}, ${topic2}: ${usage2}`;
+		}
+	}
+	return "";
 }
 
 function sendEmails(
@@ -146,7 +169,10 @@ function sendReminderEmail() {
 		undefined,
 		undefined,
 		undefined,
-		[{ PAYMENT_INFO: getPaymentLinkText }],
+		[
+			{ PAYMENT_INFO: getPaymentLinkText },
+			{ CONSUMPTION_INFO: getConsumptionInfo },
+		],
 		true,
 	);
 }

@@ -23,6 +23,30 @@ export function parseObjectsToSheetData(objects) {
 	});
 }
 
+export function parseConsumptionData(sheetData) {
+	if (!sheetData || sheetData.length < 2) return [];
+
+	const headers = sheetData[0];
+	const topic1 = headers[5] || "Soda";
+	const topic2 = headers[6] || "Beer";
+
+	const result = [];
+	for (let i = 1; i < sheetData.length; i++) {
+		const row = sheetData[i];
+		const name = row[1]; // Column B
+		if (name) {
+			result.push({
+				name: name,
+				usage: {
+					[topic1]: row[5] || "0",
+					[topic2]: row[6] || "0",
+				},
+			});
+		}
+	}
+	return result;
+}
+
 export function fillInTemplateFromObject(template, data) {
 	let template_string = JSON.stringify(template);
 
@@ -78,4 +102,19 @@ export function getPaymentLinkText(user) {
 	return shouldInclude
 		? ""
 		: "Dit is een update van uw saldo. Geen betaling vereist op dit moment.";
+}
+
+export function formatConsumptionInfo(userName, consumptionData) {
+	if (!consumptionData || consumptionData.length === 0) return "";
+
+	const userRow = consumptionData.find((row) => row.name === userName);
+	if (!userRow) return "";
+
+	const items = [];
+	for (const [topic, usage] of Object.entries(userRow.usage)) {
+		if (usage && usage !== "0") {
+			items.push(`${topic}: ${usage}`);
+		}
+	}
+	return items.length > 0 ? items.join(", ") : "";
 }
