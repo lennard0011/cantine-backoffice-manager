@@ -1,10 +1,12 @@
 {
-  "name": "cantine-backoffice-manager",
-  "version": "1.0.0",
-  "type": "module",
-  "scripts": {
-    "test": "node --test",
-    "test:watch": "node --test --watch"
-  },
-  "devDependencies": {}
+	"name": "cantine-backoffice-manager",
+	"version": "1.0.0",
+	"type": "module",
+	"scripts": {
+		"test": "node --test",
+		"test:watch": "node --test --watch"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "2.3.8"
+	}
 }
