@@ -88,12 +88,10 @@ function sendEmails(
 			const drafts = GmailApp.getDrafts();
 			const draft = drafts.filter(subjectFilter_(subject_line))[0];
 			const msg = draft.getMessage();
-			const allInlineImages = draft
-				.getMessage()
-				.getAttachments({
-					includeInlineImages: true,
-					includeAttachments: false,
-				});
+			const allInlineImages = draft.getMessage().getAttachments({
+				includeInlineImages: true,
+				includeAttachments: false,
+			});
 			const attachments = draft
 				.getMessage()
 				.getAttachments({ includeInlineImages: false });
@@ -134,7 +132,7 @@ function sendEmails(
 
 function sendConfirmEmail() {
 	sendEmails(
-		"Bevestiging betaling Shawano's Bar"             ,
+		"Bevestiging betaling Shawano's Bar",
 		undefined,
 		"Confirmation Email Sent",
 		shouldSendConfirmation,
