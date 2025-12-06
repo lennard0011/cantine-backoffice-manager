@@ -7,7 +7,6 @@ function importCsvFilesFromFolder() {
     return;
   }
 
-  // Vervang 'Transacties' met de exacte naam van je map
   const folderName = 'Transacties';
   let folder = null;
 
@@ -42,7 +41,6 @@ function importCsvFilesFromFolder() {
         allData.push(obj)
       }
 
-
       Logger.log(`Bestand '${fileName}' succesvol verwerkt.`);
     } catch (e) {
       SpreadsheetApp.getUi().alert('Fout bij verwerken bestand', `Er is een fout opgetreden bij het verwerken van bestand '${fileName}': ${e.message}`, SpreadsheetApp.getUi().ButtonSet.OK);
@@ -51,23 +49,6 @@ function importCsvFilesFromFolder() {
 
   const sheetData = parseObjectsToSheetData(allData);
   setSheetDataInSheet(paymentsSheet, sheetData)
-}
-
-function rowsToObject(row, headers) {
-  const obj = {};
-  for (let j = 0; j < headers.length; j++) {
-    obj[headers[j]] = row[j] !== undefined ? row[j] : '';
-  }
-  return obj;
-}
-
-function parseObjectsToSheetData(objects) {
-  return objects.map((obj) => {
-    const amount = obj['Bedrag'];
-    const name = obj['Naam initi�rende partij'];
-    const date = obj['Rentedatum'];
-    return [amount, name, date];
-  });
 }
 
 function setSheetDataInSheet(paymentsSheet, sheetData) {
