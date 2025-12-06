@@ -7,6 +7,11 @@ function onOpen() {
 		.addItem("Send Emails", "sendPaymentEmails")
 		.addItem("Send Confirmation Email", "sendConfirmEmail")
 		.addItem("Send Reminder Email", "sendReminderEmail")
+		.addSeparator()
+		.addItem("Dry Run - Payment Emails", "dryRunPaymentEmails")
+		.addItem("Dry Run - Confirmation Email", "dryRunConfirmEmail")
+		.addItem("Dry Run - Reminder Email", "dryRunReminderEmail")
+		.addSeparator()
 		.addItem("Handle transactions", "importCsvFilesFromFolder")
 		.addToUi();
 }
@@ -15,7 +20,14 @@ function sendPaymentEmails() {
 	sendEmails("Betaalverzoek Shawano's Bar", undefined, undefined, undefined, [
 		{ PAYMENT_INFO: getPaymentLinkText },
 		{ CONSUMPTION_INFO: getConsumptionInfo },
-	]);
+	], false, false);
+}
+
+function dryRunPaymentEmails() {
+	sendEmails("Betaalverzoek Shawano's Bar", undefined, undefined, undefined, [
+		{ PAYMENT_INFO: getPaymentLinkText },
+		{ CONSUMPTION_INFO: getConsumptionInfo },
+	], false, true);
 }
 
 function getConsumptionInfo(user) {
@@ -47,6 +59,7 @@ function sendEmails(
 	userFilter = (row) => true,
 	conditionalMailAddition = [],
 	reminder,
+	dryRun = false,
 ) {
 	if (!subjectLine) {
 		subjectLine = Browser.inputBox(
@@ -93,18 +106,30 @@ function sendEmails(
 		try {
 			const msgObj = fillInTemplateFromObject(emailTemplate.message, row);
 
-			GmailApp.sendEmail(row[RECIPIENT_COL], msgObj.subject, msgObj.text, {
-				htmlBody: msgObj.html,
-				attachments: emailTemplate.attachments,
-				inlineImages: emailTemplate.inlineImages,
-			});
-			out.push([new Date()]);
+			if (dryRun) {
+				Logger.log(`[DRY RUN] Would send email to: ${row[RECIPIENT_COL]}`);
+				Logger.log(`Subject: ${msgObj.subject}`);
+				Logger.log(`Body: ${msgObj.text.substring(0, 200)}...`);
+				Logger.log("---");
+				out.push([row[emailColumn]]);
+			} else {
+				GmailApp.sendEmail(row[RECIPIENT_COL], msgObj.subject, msgObj.text, {
+					htmlBody: msgObj.html,
+					attachments: emailTemplate.attachments,
+					inlineImages: emailTemplate.inlineImages,
+				});
+				out.push([new Date()]);
+			}
 		} catch (e) {
 			out.push([e.message]);
 		}
 	});
 
-	sheet.getRange(2, emailSentColIdx + 1, out.length).setValues(out);
+	if (!dryRun) {
+		sheet.getRange(2, emailSentColIdx + 1, out.length).setValues(out);
+	} else {
+		Logger.log(`[DRY RUN] Would update ${out.length} rows in sheet`);
+	}
 
 	function getGmailTemplateFromDrafts_(subject_line) {
 		try {
@@ -160,6 +185,20 @@ function sendConfirmEmail() {
 		"Confirmation Email Sent",
 		shouldSendConfirmation,
 		[{ HAS_NEGATIVE_BALANCE: getConditionalMailAddition }],
+		false,
+		false,
+	);
+}
+
+function dryRunConfirmEmail() {
+	sendEmails(
+		"Bevestiging betaling Shawano's Bar",
+		undefined,
+		"Confirmation Email Sent",
+		shouldSendConfirmation,
+		[{ HAS_NEGATIVE_BALANCE: getConditionalMailAddition }],
+		false,
+		true,
 	);
 }
 
@@ -173,6 +212,22 @@ function sendReminderEmail() {
 			{ PAYMENT_INFO: getPaymentLinkText },
 			{ CONSUMPTION_INFO: getConsumptionInfo },
 		],
+		true,
+		false,
+	);
+}
+
+function dryRunReminderEmail() {
+	sendEmails(
+		"Herinnering Betaalverzoek Shawano's Bar",
+		undefined,
+		undefined,
+		undefined,
+		[
+			{ PAYMENT_INFO: getPaymentLinkText },
+			{ CONSUMPTION_INFO: getConsumptionInfo },
+		],
+		true,
 		true,
 	);
 }
