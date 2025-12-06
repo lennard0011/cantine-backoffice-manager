@@ -27,7 +27,7 @@ function importCsvFilesFromFolder() {
 	}
 
 	const files = folder.getFilesByType(MimeType.CSV);
-	let allData = [];
+	const allData = [];
 	let headers;
 
 	while (files.hasNext()) {

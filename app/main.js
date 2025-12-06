@@ -48,7 +48,7 @@ function sendEmails(
 	);
 	const out = [];
 
-	obj.forEach(function (row, rowIdx) {
+	obj.forEach((row, rowIdx) => {
 		conditionalMailAddition.forEach((element) => {
 			row = { ...row, ...element };
 		});
@@ -102,10 +102,7 @@ function sendEmails(
 				(obj, i) => ((obj[i.getName()] = i), obj),
 				{},
 			);
-			const imgexp = RegExp(
-				'<img.*?src="cid:(.*?)".*?alt="(.*?)"[^\\>]+>',
-				"g",
-			);
+			const imgexp = /<img.*?src="cid:(.*?)".*?alt="(.*?)"[^>]+>/g;
 			const matches = [...htmlBody.matchAll(imgexp)];
 			const inlineImagesObj = {};
 			matches.forEach(
@@ -126,7 +123,7 @@ function sendEmails(
 		}
 
 		function subjectFilter_(subject_line) {
-			return function (element) {
+			return (element) => {
 				if (element.getMessage().getSubject() === subject_line) {
 					return element;
 				}
