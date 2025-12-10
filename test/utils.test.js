@@ -13,7 +13,7 @@ import {
 	getPaymentLinkText,
 	parseConsumptionData,
 	formatConsumptionInfo,
-} from "../app/utils.js";
+} from "./utils-export.js";
 
 describe("dateStringToDate", () => {
 	it("should convert DD-MM-YYYY string to Date object", () => {

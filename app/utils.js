@@ -1,12 +1,12 @@
 // Pure utility functions extracted for testing
 
-export function dateStringToDate(dateString) {
+function dateStringToDate(dateString) {
 	const dateParts = dateString.split("-");
 	const date = new Date(dateParts[2], dateParts[1] - 1, dateParts[0]);
 	return date;
 }
 
-export function rowsToObject(row, headers) {
+function rowsToObject(row, headers) {
 	const obj = {};
 	for (let j = 0; j < headers.length; j++) {
 		obj[headers[j]] = row[j] !== undefined ? row[j] : "";
@@ -14,7 +14,7 @@ export function rowsToObject(row, headers) {
 	return obj;
 }
 
-export function parseObjectsToSheetData(objects) {
+function parseObjectsToSheetData(objects) {
 	return objects.map((obj) => {
 		const amount = obj["Bedrag"];
 		const name = obj["Naam initirende partij"];
@@ -23,7 +23,7 @@ export function parseObjectsToSheetData(objects) {
 	});
 }
 
-export function parseConsumptionData(sheetData) {
+function parseConsumptionData(sheetData) {
 	if (!sheetData || sheetData.length < 2) return [];
 
 	const headers = sheetData[0];
@@ -47,7 +47,7 @@ export function parseConsumptionData(sheetData) {
 	return result;
 }
 
-export function fillInTemplateFromObject(template, data) {
+function fillInTemplateFromObject(template, data) {
 	let template_string = JSON.stringify(template);
 
 	Object.entries(data).forEach(([key, value]) => {
@@ -60,11 +60,11 @@ export function fillInTemplateFromObject(template, data) {
 	return JSON.parse(template_string);
 }
 
-export function shouldSendPaymentRequest(row) {
+function shouldSendPaymentRequest(row) {
 	return row["E-mailadress"].includes("@") && row["Totaal"] !== "€ 0,00";
 }
 
-export function shouldSendReminder(row, emailColumn, currentDate) {
+function shouldSendReminder(row, emailColumn, currentDate) {
 	if (
 		!row[emailColumn] ||
 		row["Resterende"] === "€ 0,00" ||
@@ -77,11 +77,11 @@ export function shouldSendReminder(row, emailColumn, currentDate) {
 	return daysDiff >= 7;
 }
 
-export function shouldSendConfirmation(user) {
+function shouldSendConfirmation(user) {
 	return user["Bedrag voldaan"] === "TRUE" && !user["Confirmation Email Sent"];
 }
 
-export function getConditionalMailAddition(user) {
+function getConditionalMailAddition(user) {
 	let returnString = "";
 	if (user["Resterende"].includes("-")) {
 		const balance = user["Resterende"].replace("-", "");
@@ -90,21 +90,21 @@ export function getConditionalMailAddition(user) {
 	return returnString;
 }
 
-export function shouldIncludePaymentLink(amountString) {
+function shouldIncludePaymentLink(amountString) {
 	const amount = parseFloat(
 		amountString.replace("€", "").trim().replace(",", "."),
 	);
 	return amount >= 20;
 }
 
-export function getPaymentLinkText(user) {
+function getPaymentLinkText(user) {
 	const shouldInclude = shouldIncludePaymentLink(user["Totaal"]);
 	return shouldInclude
 		? ""
 		: "Dit is een update van uw saldo. Geen betaling vereist op dit moment.";
 }
 
-export function formatConsumptionInfo(userName, consumptionData) {
+function formatConsumptionInfo(userName, consumptionData) {
 	if (!consumptionData || consumptionData.length === 0) return "";
 
 	const userRow = consumptionData.find((row) => row.name === userName);
