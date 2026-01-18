@@ -60,10 +60,14 @@ function fillInTemplateFromObject(template, data) {
 			// Escape control characters for JSON
 			value = value.replace(/[\n\r\t]/g, (match) => {
 				switch (match) {
-					case '\n': return '\\n';
-					case '\r': return '\\r';
-					case '\t': return '\\t';
-					default: return match;
+					case "\n":
+						return "\\n";
+					case "\r":
+						return "\\r";
+					case "\t":
+						return "\\t";
+					default:
+						return match;
 				}
 			});
 			template_string = template_string.replaceAll("$" + key, value);
