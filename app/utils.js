@@ -104,7 +104,10 @@ function shouldIncludePaymentLink(amountString) {
 	return amount >= 20;
 }
 
-function getPaymentLinkText(user, paymentLink = "https://betaalverzoek.rabobank.nl") {
+function getPaymentLinkText(
+	user,
+	paymentLink = "https://betaalverzoek.rabobank.nl",
+) {
 	const shouldInclude = shouldIncludePaymentLink(user["Totaal"]);
 	return shouldInclude
 		? paymentLink

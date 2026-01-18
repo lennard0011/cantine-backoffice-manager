@@ -1,6 +1,5 @@
 const RECIPIENT_COL = "E-mailadress";
 const EMAIL_SENT_COL = "Email Sent";
-const PAYMENT_LINK_PATTERN = /{{PAYMENT_LINK:([^}]+)}}/;
 
 function onOpen() {
 	const ui = SpreadsheetApp.getUi();
@@ -92,7 +91,9 @@ function sendEmails(
 	}
 
 	const emailTemplate = getGmailTemplateFromDrafts_(subjectLine);
-	const paymentLink = extractPaymentLinkFromTemplate(emailTemplate.message.text);
+	const paymentLink = extractPaymentLinkFromTemplate(
+		emailTemplate.message.text,
+	);
 	const dataRange = sheet.getDataRange();
 	const data = dataRange.getDisplayValues();
 	const heads = data.shift();
@@ -104,8 +105,11 @@ function sendEmails(
 
 	obj.forEach((row, rowIdx) => {
 		conditionalMailAddition.forEach((element) => {
-			if (typeof element === 'object' && element.PAYMENT_INFO) {
-				row = { ...row, PAYMENT_INFO: (user) => element.PAYMENT_INFO(user, paymentLink) };
+			if (typeof element === "object" && element.PAYMENT_INFO) {
+				row = {
+					...row,
+					PAYMENT_INFO: (user) => element.PAYMENT_INFO(user, paymentLink),
+				};
 			} else {
 				row = { ...row, ...element };
 			}
