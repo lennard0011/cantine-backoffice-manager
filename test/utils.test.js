@@ -310,7 +310,10 @@ describe("shouldIncludePaymentLink", () => {
 describe("getPaymentLinkText", () => {
 	it("should return payment link for amounts >= €20", () => {
 		const user = { Totaal: "€ 50,00" };
-		assert.strictEqual(getPaymentLinkText(user), "https://betaalverzoek.rabobank.nl");
+		assert.strictEqual(
+			getPaymentLinkText(user),
+			"https://betaalverzoek.rabobank.nl",
+		);
 	});
 
 	it("should return info message for amounts < €20", () => {

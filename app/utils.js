@@ -1,5 +1,7 @@
 // Pure utility functions extracted for testing
 
+const PAYMENT_LINK_PATTERN = /{{PAYMENT_LINK:([^}]+)}}/;
+
 function dateStringToDate(dateString) {
 	const dateParts = dateString.split("-");
 	const date = new Date(dateParts[2], dateParts[1] - 1, dateParts[0]);
@@ -59,6 +61,9 @@ function fillInTemplateFromObject(template, data) {
 		}
 	});
 
+	// Remove payment link pattern from final output
+	template_string = template_string.replace(PAYMENT_LINK_PATTERN, "");
+
 	return JSON.parse(template_string);
 }
 
@@ -99,11 +104,16 @@ function shouldIncludePaymentLink(amountString) {
 	return amount >= 20;
 }
 
-function getPaymentLinkText(user) {
+function getPaymentLinkText(user, paymentLink = "https://betaalverzoek.rabobank.nl") {
 	const shouldInclude = shouldIncludePaymentLink(user["Totaal"]);
 	return shouldInclude
-		? "https://betaalverzoek.rabobank.nl"
+		? paymentLink
 		: "Dit is een update van uw saldo. Geen betaling vereist op dit moment.";
+}
+
+function extractPaymentLinkFromTemplate(templateText) {
+	const match = templateText.match(PAYMENT_LINK_PATTERN);
+	return match ? match[1] : "https://betaalverzoek.rabobank.nl";
 }
 
 function formatConsumptionInfo(userName, consumptionData) {
