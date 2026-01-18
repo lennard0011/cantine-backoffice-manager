@@ -56,7 +56,16 @@ function fillInTemplateFromObject(template, data) {
 		if (typeof value === "function") {
 			value = value(data);
 		}
-		if (key !== "") {
+		if (key !== "" && typeof value === "string") {
+			// Escape control characters for JSON
+			value = value.replace(/[\n\r\t]/g, (match) => {
+				switch (match) {
+					case '\n': return '\\n';
+					case '\r': return '\\r';
+					case '\t': return '\\t';
+					default: return match;
+				}
+			});
 			template_string = template_string.replaceAll("$" + key, value);
 		}
 	});
