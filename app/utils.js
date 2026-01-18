@@ -104,13 +104,10 @@ function shouldIncludePaymentLink(amountString) {
 	return amount >= 20;
 }
 
-function getPaymentLinkText(
-	user,
-	paymentLink = "https://betaalverzoek.rabobank.nl",
-) {
+function getPaymentLinkText(user, paymentLink="https://betaalverzoek.rabobank.nl"  ) {
 	const shouldInclude = shouldIncludePaymentLink(user["Totaal"]);
 	return shouldInclude
-		? paymentLink
+		? `Via de volgende link kunt u de betaling voldoen: ${paymentLink}.`
 		: "Dit is een update van uw saldo. Geen betaling vereist op dit moment.";
 }
 

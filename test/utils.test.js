@@ -312,7 +312,7 @@ describe("getPaymentLinkText", () => {
 		const user = { Totaal: "€ 50,00" };
 		assert.strictEqual(
 			getPaymentLinkText(user),
-			"https://betaalverzoek.rabobank.nl",
+			"Via de volgende link kunt u de betaling voldoen: https://betaalverzoek.rabobank.nl.",
 		);
 	});
 
