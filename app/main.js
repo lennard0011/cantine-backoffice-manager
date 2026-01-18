@@ -125,7 +125,7 @@ function sendEmails(
 			if (dryRun) {
 				Logger.log(`[DRY RUN] Would send email to: ${row[RECIPIENT_COL]}`);
 				Logger.log(`Subject: ${msgObj.subject}`);
-				Logger.log(`Body: ${msgObj.text.substring(0, 200)}...`);
+				Logger.log(`Body: ${msgObj.text}...`);
 				Logger.log("---");
 				out.push([row[emailColumn]]);
 			} else {

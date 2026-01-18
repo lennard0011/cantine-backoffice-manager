@@ -54,7 +54,9 @@ function fillInTemplateFromObject(template, data) {
 		if (typeof value === "function") {
 			value = value(data);
 		}
-		template_string = template_string.replaceAll("$" + key, value);
+		if (key !== "") {
+			template_string = template_string.replaceAll("$" + key, value);
+		}
 	});
 
 	return JSON.parse(template_string);
@@ -100,7 +102,7 @@ function shouldIncludePaymentLink(amountString) {
 function getPaymentLinkText(user) {
 	const shouldInclude = shouldIncludePaymentLink(user["Totaal"]);
 	return shouldInclude
-		? ""
+		? "https://betaalverzoek.rabobank.nl"
 		: "Dit is een update van uw saldo. Geen betaling vereist op dit moment.";
 }
 
