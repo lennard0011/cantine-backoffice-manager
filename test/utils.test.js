@@ -12,7 +12,6 @@ import {
 	shouldIncludePaymentLink,
 	getPaymentLinkText,
 	parseConsumptionData,
-	formatConsumptionInfo,
 } from "./utils-export.js";
 
 describe("dateStringToDate", () => {
@@ -356,40 +355,5 @@ describe("parseConsumptionData", () => {
 
 		assert.strictEqual(result[0].usage.Frisdrank, "10");
 		assert.strictEqual(result[0].usage.Bier, "5");
-	});
-});
-
-describe("formatConsumptionInfo", () => {
-	it("should format consumption info for user", () => {
-		const consumptionData = [
-			{ name: "John Doe", usage: { Soda: "5", Beer: "3" } },
-			{ name: "Jane Smith", usage: { Soda: "2", Beer: "0" } },
-		];
-
-		const result = formatConsumptionInfo("John Doe", consumptionData);
-		assert.strictEqual(result, "Soda: 5, Beer: 3");
-	});
-
-	it("should skip zero values", () => {
-		const consumptionData = [
-			{ name: "Jane Smith", usage: { Soda: "2", Beer: "0" } },
-		];
-
-		const result = formatConsumptionInfo("Jane Smith", consumptionData);
-		assert.strictEqual(result, "Soda: 2");
-	});
-
-	it("should return empty string for non-existent user", () => {
-		const consumptionData = [
-			{ name: "John Doe", usage: { Soda: "5", Beer: "3" } },
-		];
-
-		const result = formatConsumptionInfo("Unknown User", consumptionData);
-		assert.strictEqual(result, "");
-	});
-
-	it("should return empty string for empty data", () => {
-		const result = formatConsumptionInfo("John Doe", []);
-		assert.strictEqual(result, "");
 	});
 });

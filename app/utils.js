@@ -92,7 +92,7 @@ function getConditionalMailAddition(user) {
 	let returnString = "";
 	if (user["Resterende"].includes("-")) {
 		const balance = user["Resterende"].replace("-", "");
-		returnString += `U hebt teveel betaald. Je mag een betaalverzoek sturen ter waarde van ${balance}. Doet u dit niet, dan wordt het verekend met de volgende keer.`;
+		returnString += `U hebt teveel betaald. Je mag een betaalverzoek sturen ter waarde van ${balance}. Doet u dit niet, dan wordt het verrekend met de volgende keer.`;
 	}
 	return returnString;
 }
@@ -117,19 +117,4 @@ function getPaymentLinkText(
 function extractPaymentLinkFromTemplate(templateText) {
 	const match = templateText.match(PAYMENT_LINK_PATTERN);
 	return match ? match[1] : "https://betaalverzoek.rabobank.nl";
-}
-
-function formatConsumptionInfo(userName, consumptionData) {
-	if (!consumptionData || consumptionData.length === 0) return "";
-
-	const userRow = consumptionData.find((row) => row.name === userName);
-	if (!userRow) return "";
-
-	const items = [];
-	for (const [topic, usage] of Object.entries(userRow.usage)) {
-		if (usage && usage !== "0") {
-			items.push(`${topic}: ${usage}`);
-		}
-	}
-	return items.length > 0 ? items.join(", ") : "";
 }

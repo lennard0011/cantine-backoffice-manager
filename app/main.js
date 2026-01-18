@@ -61,17 +61,17 @@ function getConsumptionInfo(user) {
 		{
 			topic: headers[5],
 			entities: [
-				{ topic: subHeaders[3], amount: userData[3] },
-				{ topic: subHeaders[4], amount: userData[4] },
-				{ topic: subHeaders[5], amount: userData[5] },
+				{ topic: subHeaders[3], usage: userData[3], amount: userData[4] },
+				{ topic: subHeaders[5], usage: userData[5], amount: userData[6] },
+				{ topic: subHeaders[7], usage: userData[7], amount: userData[8] },
 			],
 		},
 		{
 			topic: headers[12],
 			entities: [
-				{ topic: subHeaders[10], amount: userData[10] },
-				{ topic: subHeaders[11], amount: userData[11] },
-				{ topic: subHeaders[12], amount: userData[12] },
+				{ topic: subHeaders[10], usage: userData[10], amount: userData[11] },
+				{ topic: subHeaders[12], usage: userData[12], amount: userData[13] },
+				{ topic: subHeaders[14], usage: userData[14], amount: userData[15] },
 			],
 		},
 	];
@@ -84,7 +84,7 @@ function formatConsumptionInfo(consumptionData) {
 	consumptionData.forEach((topicData) => {
 		info += `\n${topicData.topic}:\n`;
 		topicData.entities.forEach((entity) => {
-			info += `- ${entity.topic}: ${entity.amount}\n`;
+			info += `- ${entity.topic}: ${entity.usage} keer. ${entity.amount}\n`;
 		});
 	});
 	return info;
