@@ -11,7 +11,6 @@ import {
 	getConditionalMailAddition,
 	shouldIncludePaymentLink,
 	getPaymentLinkText,
-	parseConsumptionData,
 } from "./utils-export.js";
 
 describe("dateStringToDate", () => {
@@ -320,40 +319,5 @@ describe("getPaymentLinkText", () => {
 		const result = getPaymentLinkText(user);
 		assert.ok(result.includes("update"));
 		assert.ok(result.includes("Geen betaling vereist"));
-	});
-});
-
-describe("parseConsumptionData", () => {
-	it("should parse consumption data from sheet", () => {
-		const sheetData = [
-			["", "Name", "", "", "", "Soda", "Beer"],
-			["", "John Doe", "", "", "", "5", "3"],
-			["", "Jane Smith", "", "", "", "2", "0"],
-		];
-
-		const result = parseConsumptionData(sheetData);
-
-		assert.strictEqual(result.length, 2);
-		assert.strictEqual(result[0].name, "John Doe");
-		assert.strictEqual(result[0].usage.Soda, "5");
-		assert.strictEqual(result[0].usage.Beer, "3");
-		assert.strictEqual(result[1].name, "Jane Smith");
-	});
-
-	it("should handle empty data", () => {
-		const result = parseConsumptionData([]);
-		assert.deepStrictEqual(result, []);
-	});
-
-	it("should use custom topic names from headers", () => {
-		const sheetData = [
-			["", "Name", "", "", "", "Frisdrank", "Bier"],
-			["", "John", "", "", "", "10", "5"],
-		];
-
-		const result = parseConsumptionData(sheetData);
-
-		assert.strictEqual(result[0].usage.Frisdrank, "10");
-		assert.strictEqual(result[0].usage.Bier, "5");
 	});
 });

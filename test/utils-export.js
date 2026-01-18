@@ -11,7 +11,7 @@ const utilsCode = readFileSync(
 	join(__dirname, "..", "app", "utils.js"),
 	"utf-8",
 );
-const wrappedCode = `${utilsCode}\nreturn { dateStringToDate, rowsToObject, parseObjectsToSheetData, parseConsumptionData, fillInTemplateFromObject, shouldSendPaymentRequest, shouldSendReminder, shouldSendConfirmation, getConditionalMailAddition, shouldIncludePaymentLink, getPaymentLinkText };`;
+const wrappedCode = `${utilsCode}\nreturn { dateStringToDate, rowsToObject, parseObjectsToSheetData, fillInTemplateFromObject, shouldSendPaymentRequest, shouldSendReminder, shouldSendConfirmation, getConditionalMailAddition, shouldIncludePaymentLink, getPaymentLinkText };`;
 
 const utils = new Function(wrappedCode)();
 

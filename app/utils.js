@@ -25,30 +25,6 @@ function parseObjectsToSheetData(objects) {
 	});
 }
 
-function parseConsumptionData(sheetData) {
-	if (!sheetData || sheetData.length < 2) return [];
-
-	const headers = sheetData[0];
-	const topic1 = headers[5] || "Soda";
-	const topic2 = headers[6] || "Beer";
-
-	const result = [];
-	for (let i = 1; i < sheetData.length; i++) {
-		const row = sheetData[i];
-		const name = row[1]; // Column B
-		if (name) {
-			result.push({
-				name: name,
-				usage: {
-					[topic1]: row[5] || "0",
-					[topic2]: row[6] || "0",
-				},
-			});
-		}
-	}
-	return result;
-}
-
 function fillInTemplateFromObject(template, data) {
 	let template_string = JSON.stringify(template);
 

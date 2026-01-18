@@ -74,6 +74,38 @@ function getConsumptionInfo(user) {
 				{ topic: subHeaders[14], usage: userData[14], amount: userData[15] },
 			],
 		},
+		{
+			topic: headers[19],
+			entities: [
+				{ topic: subHeaders[17], usage: userData[17], amount: userData[18] },
+				{ topic: subHeaders[19], usage: userData[19], amount: userData[20] },
+				{ topic: subHeaders[21], usage: userData[21], amount: userData[22] },
+			],
+		},
+		{
+			topic: headers[25],
+			entities: [
+				{ topic: subHeaders[23], usage: userData[23], amount: userData[24] },
+				{ topic: subHeaders[25], usage: userData[25], amount: userData[26] },
+				{ topic: subHeaders[27], usage: userData[27], amount: userData[28] },
+			],
+		},
+		{
+			topic: headers[32],
+			entities: [{ topic: "", usage: 1, amount: userData[31] }],
+		},
+		{
+			topic: headers[35],
+			entities: [{ topic: "", usage: 1, amount: userData[34] }],
+		},
+		{
+			topic: headers[38],
+			entities: [{ topic: "", usage: 1, amount: userData[37] }],
+		},
+		{
+			topic: "Vorige rekening",
+			entities: [{ topic: "", usage: 1, amount: userData[43] }],
+		},
 	];
 
 	return formatConsumptionInfo(consumptionData);
