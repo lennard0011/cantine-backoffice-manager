@@ -114,11 +114,14 @@ function getConsumptionInfo(user) {
 function formatConsumptionInfo(consumptionData) {
 	let info = "Overzicht consumpties:\n";
 	consumptionData.forEach((topicData) => {
-		if (topicData == "") return;
+		if (topicData.topic == "") return;
 
 		info += `\n${topicData.topic}:\n`;
 		topicData.entities.forEach((entity) => {
-			if (entity.amount === "" || entity.amount === "0") return;
+			if (entity.amount === "" || entity.amount === "€ 0,00") {
+				info += `- ${entity.topic}: Geen consumpties.\n`;
+				return;
+			}
 			info += `- ${entity.topic}: ${entity.usage} keer. ${entity.amount}\n`;
 		});
 	});
