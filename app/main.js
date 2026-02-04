@@ -3,7 +3,7 @@ const EMAIL_SENT_COL = "Email Sent";
 
 function onOpen() {
 	const ui = SpreadsheetApp.getUi();
-	ui.createMenu("Mail Merge")
+	ui.createMenu("Automations")
 		.addItem("Send Emails", "sendPaymentEmails")
 		.addItem("Send Confirmation Email", "sendConfirmEmail")
 		.addItem("Send Reminder Email", "sendReminderEmail")
@@ -200,7 +200,6 @@ function sendEmails(
 				out.push([row[emailColumn]]);
 			} else {
 				GmailApp.sendEmail(row[RECIPIENT_COL], msgObj.subject, msgObj.text, {
-					htmlBody: msgObj.html,
 					attachments: emailTemplate.attachments,
 					inlineImages: emailTemplate.inlineImages,
 				});
