@@ -167,10 +167,11 @@ describe("shouldSendPaymentRequest", () => {
 });
 
 describe("shouldSendReminder", () => {
-	it("should return true when email sent 7+ days ago with outstanding balance", () => {
+	it("should return true when email sent 7+ days ago with outstanding balance >= €20", () => {
 		const row = {
 			"Email Sent": "01-01-2024",
 			Resterende: "€ 50,00",
+			Totaal: "€ 50,00",
 		};
 		const currentDate = new Date("2024-01-10");
 
@@ -184,6 +185,7 @@ describe("shouldSendReminder", () => {
 		const row = {
 			"Email Sent": "01-01-2024",
 			Resterende: "€ 50,00",
+			Totaal: "€ 50,00",
 		};
 		const currentDate = new Date("2024-01-05");
 
@@ -197,6 +199,7 @@ describe("shouldSendReminder", () => {
 		const row = {
 			"Email Sent": "01-01-2024",
 			Resterende: "€ 0,00",
+			Totaal: "€ 50,00",
 		};
 		const currentDate = new Date("2024-01-10");
 
@@ -210,6 +213,7 @@ describe("shouldSendReminder", () => {
 		const row = {
 			"Email Sent": "01-01-2024",
 			Resterende: "-€ 10,00",
+			Totaal: "€ 50,00",
 		};
 		const currentDate = new Date("2024-01-10");
 
@@ -223,6 +227,35 @@ describe("shouldSendReminder", () => {
 		const row = {
 			"Email Sent": "",
 			Resterende: "€ 50,00",
+			Totaal: "€ 50,00",
+		};
+		const currentDate = new Date("2024-01-10");
+
+		assert.strictEqual(
+			shouldSendReminder(row, "Email Sent", currentDate),
+			false,
+		);
+	});
+
+	it("should return false when Totaal is under €20", () => {
+		const row = {
+			"Email Sent": "01-01-2024",
+			Resterende: "€ 15,00",
+			Totaal: "€ 15,00",
+		};
+		const currentDate = new Date("2024-01-10");
+
+		assert.strictEqual(
+			shouldSendReminder(row, "Email Sent", currentDate),
+			false,
+		);
+	});
+
+	it("should return false when Totaal is exactly €20 boundary - below", () => {
+		const row = {
+			"Email Sent": "01-01-2024",
+			Resterende: "€ 19,99",
+			Totaal: "€ 19,99",
 		};
 		const currentDate = new Date("2024-01-10");
 

@@ -64,7 +64,8 @@ function shouldSendReminder(row, emailColumn, currentDate) {
 	if (
 		!row[emailColumn] ||
 		row["Resterende"] === "€ 0,00" ||
-		row["Resterende"].includes("-")
+		row["Resterende"].includes("-") ||
+		!shouldIncludePaymentLink(row["Totaal"])
 	) {
 		return false;
 	}
