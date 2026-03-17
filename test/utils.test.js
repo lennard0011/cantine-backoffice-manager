@@ -71,12 +71,12 @@ describe("parseObjectsToSheetData", () => {
 		const objects = [
 			{
 				Bedrag: "€ 50,00",
-				"Naam initirende partij": "John Doe",
+				"Naam initi�rende partij": "John Doe",
 				Rentedatum: "2024-03-15",
 			},
 			{
 				Bedrag: "€ 25,00",
-				"Naam initirende partij": "Jane Smith",
+				"Naam initi�rende partij": "Jane Smith",
 				Rentedatum: "2024-03-16",
 			},
 		];

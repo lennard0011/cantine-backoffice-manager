@@ -19,7 +19,7 @@ function rowsToObject(row, headers) {
 function parseObjectsToSheetData(objects) {
 	return objects.map((obj) => {
 		const amount = obj["Bedrag"];
-		const name = obj["Naam initirende partij"];
+		const name = obj["Naam initi�rende partij"];
 		const date = obj["Rentedatum"];
 		return [amount, name, date];
 	});
