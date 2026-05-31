@@ -179,7 +179,7 @@ function sendEmails(
 			!row["E-mailadress"].includes("@") ||
 			row["Totaal"] === "€ 0,00" ||
 			!userFilter(row) ||
-			row[EMAIL_SENT_COL] !== ""
+			(!reminder && row[emailColumn] !== "")
 		) {
 			out.push([row[emailColumn]]);
 			return;
