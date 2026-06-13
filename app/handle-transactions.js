@@ -65,21 +65,21 @@ function importCsvFilesFromFolder() {
 	}
 
 	const sheetData = parseObjectsToSheetData(allData);
+	sheetData.sort((a, b) => {
+		const dateA = dateStringToDate(a[2]);
+		const dateB = dateStringToDate(b[2]);
+		if (dateA - dateB !== 0) return dateA - dateB;
+		if (a[1] < b[1]) return -1;
+		if (a[1] > b[1]) return 1;
+		if (a[0] < b[0]) return -1;
+		if (a[0] > b[0]) return 1;
+		return 0;
+	});
 	return setSheetDataInSheet(paymentsSheet, sheetData);
 }
 
 function setSheetDataInSheet(paymentsSheet, sheetData) {
-	if (sheetData.length > 0) {
-		paymentsSheet
-			.getRange(2, 1, sheetData.length, sheetData[0].length)
-			.setValues(sheetData);
-		return {
-			ok: true,
-			title: "Klaar",
-			message:
-				'Alle CSV-bestanden zijn geïmporteerd en in het tabblad "Betalingen" geplakt.',
-		};
-	} else {
+	if (sheetData.length === 0) {
 		return {
 			ok: true,
 			title: "Geen bestanden",
@@ -87,4 +87,15 @@ function setSheetDataInSheet(paymentsSheet, sheetData) {
 				"Geen CSV-bestanden gevonden in de map of de bestanden bevatten geen gegevens.",
 		};
 	}
+
+	paymentsSheet
+		.getRange(2, 1, sheetData.length, sheetData[0].length)
+		.setValues(sheetData);
+
+	return {
+		ok: true,
+		title: "Klaar",
+		message:
+			'Alle CSV-bestanden zijn geïmporteerd en in het tabblad "Betalingen" geplakt.',
+	};
 }
