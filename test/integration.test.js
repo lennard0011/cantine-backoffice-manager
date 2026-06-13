@@ -79,22 +79,35 @@ describe("Integration Tests", () => {
 					"E-mailadress": "john@example.com",
 					"Email Sent": "01-01-2024",
 					Resterende: "€ 50,00",
+					Totaal: "€ 50,00",
 				},
 				{
 					"E-mailadress": "jane@example.com",
 					"Email Sent": "05-01-2024",
 					Resterende: "€ 30,00",
+					Totaal: "€ 30,00",
 				},
 				{
 					"E-mailadress": "bob@example.com",
 					"Email Sent": "01-01-2024",
 					Resterende: "€ 0,00",
+					Totaal: "€ 50,00",
+				},
+				{
+					"E-mailadress": "alice@example.com",
+					"Email Sent": "01-01-2024",
+					Resterende: "€ 15,00",
+					Totaal: "€ 15,00",
 				},
 			];
 
 			const needsReminder = users.filter((user) => {
 				if (!user["Email Sent"] || user["Resterende"] === "€ 0,00")
 					return false;
+				const amount = parseFloat(
+					user["Totaal"].replace("€", "").trim().replace(",", "."),
+				);
+				if (amount < 20) return false;
 				const emailDate = new Date(
 					user["Email Sent"].split("-").reverse().join("-"),
 				);

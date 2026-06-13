@@ -11,7 +11,7 @@ import {
 	getConditionalMailAddition,
 	shouldIncludePaymentLink,
 	getPaymentLinkText,
-} from "../app/utils.js";
+} from "./utils-export.js";
 
 describe("dateStringToDate", () => {
 	it("should convert DD-MM-YYYY string to Date object", () => {
@@ -71,12 +71,12 @@ describe("parseObjectsToSheetData", () => {
 		const objects = [
 			{
 				Bedrag: "€ 50,00",
-				"Naam initirende partij": "John Doe",
+				"Naam initi�rende partij": "John Doe",
 				Rentedatum: "2024-03-15",
 			},
 			{
 				Bedrag: "€ 25,00",
-				"Naam initirende partij": "Jane Smith",
+				"Naam initi�rende partij": "Jane Smith",
 				Rentedatum: "2024-03-16",
 			},
 		];
@@ -167,10 +167,11 @@ describe("shouldSendPaymentRequest", () => {
 });
 
 describe("shouldSendReminder", () => {
-	it("should return true when email sent 7+ days ago with outstanding balance", () => {
+	it("should return true when email sent 7+ days ago with outstanding balance >= €20", () => {
 		const row = {
 			"Email Sent": "01-01-2024",
 			Resterende: "€ 50,00",
+			Totaal: "€ 50,00",
 		};
 		const currentDate = new Date("2024-01-10");
 
@@ -184,6 +185,7 @@ describe("shouldSendReminder", () => {
 		const row = {
 			"Email Sent": "01-01-2024",
 			Resterende: "€ 50,00",
+			Totaal: "€ 50,00",
 		};
 		const currentDate = new Date("2024-01-05");
 
@@ -197,6 +199,7 @@ describe("shouldSendReminder", () => {
 		const row = {
 			"Email Sent": "01-01-2024",
 			Resterende: "€ 0,00",
+			Totaal: "€ 50,00",
 		};
 		const currentDate = new Date("2024-01-10");
 
@@ -210,6 +213,7 @@ describe("shouldSendReminder", () => {
 		const row = {
 			"Email Sent": "01-01-2024",
 			Resterende: "-€ 10,00",
+			Totaal: "€ 50,00",
 		};
 		const currentDate = new Date("2024-01-10");
 
@@ -223,6 +227,35 @@ describe("shouldSendReminder", () => {
 		const row = {
 			"Email Sent": "",
 			Resterende: "€ 50,00",
+			Totaal: "€ 50,00",
+		};
+		const currentDate = new Date("2024-01-10");
+
+		assert.strictEqual(
+			shouldSendReminder(row, "Email Sent", currentDate),
+			false,
+		);
+	});
+
+	it("should return false when Totaal is under €20", () => {
+		const row = {
+			"Email Sent": "01-01-2024",
+			Resterende: "€ 15,00",
+			Totaal: "€ 15,00",
+		};
+		const currentDate = new Date("2024-01-10");
+
+		assert.strictEqual(
+			shouldSendReminder(row, "Email Sent", currentDate),
+			false,
+		);
+	});
+
+	it("should return false when Totaal is exactly €20 boundary - below", () => {
+		const row = {
+			"Email Sent": "01-01-2024",
+			Resterende: "€ 19,99",
+			Totaal: "€ 19,99",
 		};
 		const currentDate = new Date("2024-01-10");
 
@@ -250,12 +283,12 @@ describe("shouldSendConfirmation", () => {
 		assert.strictEqual(shouldSendConfirmation(user), false);
 	});
 
-	it("should return false when confirmation already sent", () => {
+	it("should return true when payment completed even if confirmation already sent (dedup handled by emailColumn guard)", () => {
 		const user = {
 			"Bedrag voldaan": "TRUE",
 			"Confirmation Email Sent": "2024-01-01",
 		};
-		assert.strictEqual(shouldSendConfirmation(user), false);
+		assert.strictEqual(shouldSendConfirmation(user), true);
 	});
 });
 
@@ -306,9 +339,12 @@ describe("shouldIncludePaymentLink", () => {
 });
 
 describe("getPaymentLinkText", () => {
-	it("should return empty string for amounts >= €20", () => {
+	it("should return payment link for amounts >= €20", () => {
 		const user = { Totaal: "€ 50,00" };
-		assert.strictEqual(getPaymentLinkText(user), "");
+		assert.strictEqual(
+			getPaymentLinkText(user),
+			"Via de volgende link kunt u de betaling voldoen: https://betaalverzoek.rabobank.nl.",
+		);
 	});
 
 	it("should return info message for amounts < €20", () => {

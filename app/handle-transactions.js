@@ -76,7 +76,7 @@ function setSheetDataInSheet(paymentsSheet, sheetData) {
 	} else {
 		SpreadsheetApp.getUi().alert(
 			"Geen bestanden",
-			`Geen CSV-bestanden gevonden in de map "${folderName}" of de bestanden bevatten geen gegevens.`,
+			`Geen CSV-bestanden gevonden in de map of de bestanden bevatten geen gegevens.`,
 			SpreadsheetApp.getUi().ButtonSet.OK,
 		);
 	}

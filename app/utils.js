@@ -1,12 +1,14 @@
 // Pure utility functions extracted for testing
 
-export function dateStringToDate(dateString) {
+const PAYMENT_LINK_PATTERN = /{{PAYMENT_LINK:([^}]+)}}/;
+
+function dateStringToDate(dateString) {
 	const dateParts = dateString.split("-");
 	const date = new Date(dateParts[2], dateParts[1] - 1, dateParts[0]);
 	return date;
 }
 
-export function rowsToObject(row, headers) {
+function rowsToObject(row, headers) {
 	const obj = {};
 	for (let j = 0; j < headers.length; j++) {
 		obj[headers[j]] = row[j] !== undefined ? row[j] : "";
@@ -14,37 +16,56 @@ export function rowsToObject(row, headers) {
 	return obj;
 }
 
-export function parseObjectsToSheetData(objects) {
+function parseObjectsToSheetData(objects) {
 	return objects.map((obj) => {
 		const amount = obj["Bedrag"];
-		const name = obj["Naam initirende partij"];
+		const name = obj["Naam initi\uFFFDrende partij"];
 		const date = obj["Rentedatum"];
 		return [amount, name, date];
 	});
 }
 
-export function fillInTemplateFromObject(template, data) {
+function fillInTemplateFromObject(template, data) {
 	let template_string = JSON.stringify(template);
 
 	Object.entries(data).forEach(([key, value]) => {
 		if (typeof value === "function") {
 			value = value(data);
 		}
-		template_string = template_string.replaceAll("$" + key, value);
+		if (key !== "" && typeof value === "string") {
+			// Escape control characters for JSON
+			value = value.replace(/[\n\r\t]/g, (match) => {
+				switch (match) {
+					case "\n":
+						return "\\n";
+					case "\r":
+						return "\\r";
+					case "\t":
+						return "\\t";
+					default:
+						return match;
+				}
+			});
+			template_string = template_string.replaceAll("$" + key, value);
+		}
 	});
+
+	// Remove payment link pattern from final output
+	template_string = template_string.replace(PAYMENT_LINK_PATTERN, "");
 
 	return JSON.parse(template_string);
 }
 
-export function shouldSendPaymentRequest(row) {
+function shouldSendPaymentRequest(row) {
 	return row["E-mailadress"].includes("@") && row["Totaal"] !== "€ 0,00";
 }
 
-export function shouldSendReminder(row, emailColumn, currentDate) {
+function shouldSendReminder(row, emailColumn, currentDate) {
 	if (
 		!row[emailColumn] ||
 		row["Resterende"] === "€ 0,00" ||
-		row["Resterende"].includes("-")
+		row["Resterende"].includes("-") ||
+		!shouldIncludePaymentLink(row["Totaal"])
 	) {
 		return false;
 	}
@@ -53,29 +74,37 @@ export function shouldSendReminder(row, emailColumn, currentDate) {
 	return daysDiff >= 7;
 }
 
-export function shouldSendConfirmation(user) {
-	return user["Bedrag voldaan"] === "TRUE" && !user["Confirmation Email Sent"];
+function shouldSendConfirmation(user) {
+	return user["Bedrag voldaan"] === "TRUE";
 }
 
-export function getConditionalMailAddition(user) {
+function getConditionalMailAddition(user) {
 	let returnString = "";
 	if (user["Resterende"].includes("-")) {
 		const balance = user["Resterende"].replace("-", "");
-		returnString += `U hebt teveel betaald. Je mag een betaalverzoek sturen ter waarde van ${balance}. Doet u dit niet, dan wordt het verekend met de volgende keer.`;
+		returnString += `U hebt teveel betaald. Je mag een betaalverzoek sturen ter waarde van ${balance}. Doet u dit niet, dan wordt het verrekend met de volgende keer.`;
 	}
 	return returnString;
 }
 
-export function shouldIncludePaymentLink(amountString) {
+function shouldIncludePaymentLink(amountString) {
 	const amount = parseFloat(
 		amountString.replace("€", "").trim().replace(",", "."),
 	);
 	return amount >= 20;
 }
 
-export function getPaymentLinkText(user) {
+function getPaymentLinkText(
+	user,
+	paymentLink = "https://betaalverzoek.rabobank.nl",
+) {
 	const shouldInclude = shouldIncludePaymentLink(user["Totaal"]);
 	return shouldInclude
-		? ""
+		? `Via de volgende link kunt u de betaling voldoen: ${paymentLink}.`
 		: "Dit is een update van uw saldo. Geen betaling vereist op dit moment.";
+}
+
+function extractPaymentLinkFromTemplate(templateText) {
+	const match = templateText.match(PAYMENT_LINK_PATTERN);
+	return match ? match[1] : "https://betaalverzoek.rabobank.nl";
 }
