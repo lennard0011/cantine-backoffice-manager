@@ -66,9 +66,8 @@ function importCsvFilesFromFolder() {
 
 	const sheetData = parseObjectsToSheetData(allData);
 	sheetData.sort((a, b) => {
-		const dateA = dateStringToDate(a[2]);
-		const dateB = dateStringToDate(b[2]);
-		if (dateA - dateB !== 0) return dateA - dateB;
+		if (a[2] < b[2]) return -1;
+		if (a[2] > b[2]) return 1;
 		if (a[1] < b[1]) return -1;
 		if (a[1] > b[1]) return 1;
 		if (a[0] < b[0]) return -1;
