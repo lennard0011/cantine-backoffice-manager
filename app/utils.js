@@ -19,7 +19,7 @@ function rowsToObject(row, headers) {
 function parseObjectsToSheetData(objects) {
 	return objects.map((obj) => {
 		const amount = obj["Bedrag"];
-		const name = obj["Naam initi�rende partij"];
+		const name = obj["Naam initi\uFFFDrende partij"];
 		const date = obj["Rentedatum"];
 		return [amount, name, date];
 	});
@@ -75,7 +75,7 @@ function shouldSendReminder(row, emailColumn, currentDate) {
 }
 
 function shouldSendConfirmation(user) {
-	return user["Bedrag voldaan"] === "TRUE" && !user["Confirmation Email Sent"];
+	return user["Bedrag voldaan"] === "TRUE";
 }
 
 function getConditionalMailAddition(user) {

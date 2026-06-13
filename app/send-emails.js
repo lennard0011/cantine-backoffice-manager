@@ -9,6 +9,7 @@ function sendEmails(
 	conditionalMailAddition = [],
 	reminder,
 	dryRun = false,
+	skipTotaalCheck = false,
 ) {
 	if (!subjectLine) {
 		subjectLine = Browser.inputBox(
@@ -50,7 +51,7 @@ function sendEmails(
 
 		if (
 			!row["E-mailadress"].includes("@") ||
-			row["Totaal"] === "€ 0,00" ||
+			(!skipTotaalCheck && row["Totaal"] === "€ 0,00") ||
 			!userFilter(row) ||
 			(!reminder && row[emailColumn] !== "")
 		) {

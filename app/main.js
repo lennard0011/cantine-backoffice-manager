@@ -52,6 +52,7 @@ function sendConfirmEmail() {
 		[{ HAS_NEGATIVE_BALANCE: getConditionalMailAddition }],
 		false,
 		false,
+		true,
 	);
 }
 
@@ -63,6 +64,7 @@ function dryRunConfirmEmail() {
 		shouldSendConfirmation,
 		[{ HAS_NEGATIVE_BALANCE: getConditionalMailAddition }],
 		false,
+		true,
 		true,
 	);
 }

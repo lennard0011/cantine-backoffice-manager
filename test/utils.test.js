@@ -283,12 +283,12 @@ describe("shouldSendConfirmation", () => {
 		assert.strictEqual(shouldSendConfirmation(user), false);
 	});
 
-	it("should return false when confirmation already sent", () => {
+	it("should return true when payment completed even if confirmation already sent (dedup handled by emailColumn guard)", () => {
 		const user = {
 			"Bedrag voldaan": "TRUE",
 			"Confirmation Email Sent": "2024-01-01",
 		};
-		assert.strictEqual(shouldSendConfirmation(user), false);
+		assert.strictEqual(shouldSendConfirmation(user), true);
 	});
 });
 
