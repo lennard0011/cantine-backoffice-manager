@@ -9,7 +9,7 @@ function onOpen() {
 		.addItem("Dry Run - Confirmation Email", "dryRunConfirmEmail")
 		.addItem("Dry Run - Reminder Email", "dryRunReminderEmail")
 		.addSeparator()
-		.addItem("Handle transactions", "importCsvFilesFromFolder")
+		.addItem("Handle transactions", "handleTransactions")
 		.addToUi();
 }
 
@@ -97,4 +97,10 @@ function dryRunReminderEmail() {
 		true,
 		true,
 	);
+}
+
+function handleTransactions() {
+	const ui = SpreadsheetApp.getUi();
+	const result = importCsvFilesFromFolder();
+	ui.alert(result.title, result.message, ui.ButtonSet.OK);
 }
