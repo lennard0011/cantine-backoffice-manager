@@ -1,11 +1,3 @@
-/**
- * Imports all CSV files from the "Transacties" Drive folder into the
- * "Inkomende betalingen" sheet.
- *
- * @returns {{ ok: boolean, titleKey: string, message: string }}
- *   A result object describing success or the first error encountered.
- *   The caller (UI controller in main.js) is responsible for showing alerts.
- */
 function importCsvFilesFromFolder() {
 	const ss = SpreadsheetApp.getActiveSpreadsheet();
 	const paymentsSheet = ss.getSheetByName("Inkomende betalingen");
@@ -20,13 +12,26 @@ function importCsvFilesFromFolder() {
 	}
 
 	const folderName = "Transacties";
-	const folders = DriveApp.getFoldersByName(folderName);
+	const ssFile = DriveApp.getFileById(ss.getId());
+	const parentFolders = ssFile.getParents();
+
+	if (!parentFolders.hasNext()) {
+		return {
+			ok: false,
+			title: "Fout",
+			message:
+				"De bovenliggende map van het spreadsheet kon niet worden bepaald.",
+		};
+	}
+
+	const parentFolder = parentFolders.next();
+	const folders = parentFolder.getFoldersByName(folderName);
 
 	if (!folders.hasNext()) {
 		return {
 			ok: false,
 			title: "Fout",
-			message: `De map "${folderName}" is niet gevonden. Zorg ervoor dat de map bestaat en zich in dezelfde Google Drive bevindt als dit script.`,
+			message: `De map "${folderName}" is niet gevonden in dezelfde map als dit spreadsheet. Zorg ervoor dat de map bestaat en zich op de juiste locatie bevindt.`,
 		};
 	}
 
