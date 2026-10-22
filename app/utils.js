@@ -75,7 +75,7 @@ function shouldSendReminder(row, emailColumn, currentDate) {
 }
 
 function shouldSendConfirmation(user) {
-	return user["Bedrag voldaan"] === "TRUE";
+	return user["Bedrag voldaan"] === "TRUE" && user["Totaal"] !== "€ 0,00";
 }
 
 function getConditionalMailAddition(user) {

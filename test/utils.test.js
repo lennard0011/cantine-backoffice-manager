@@ -267,9 +267,10 @@ describe("shouldSendReminder", () => {
 });
 
 describe("shouldSendConfirmation", () => {
-	it("should return true when payment completed and no confirmation sent", () => {
+	it("should return true when payment completed and non-zero total", () => {
 		const user = {
 			"Bedrag voldaan": "TRUE",
+			Totaal: "€ 50,00",
 			"Confirmation Email Sent": "",
 		};
 		assert.strictEqual(shouldSendConfirmation(user), true);
@@ -278,6 +279,16 @@ describe("shouldSendConfirmation", () => {
 	it("should return false when payment not completed", () => {
 		const user = {
 			"Bedrag voldaan": "FALSE",
+			Totaal: "€ 50,00",
+			"Confirmation Email Sent": "",
+		};
+		assert.strictEqual(shouldSendConfirmation(user), false);
+	});
+
+	it("should return false when total is zero even if payment marked completed", () => {
+		const user = {
+			"Bedrag voldaan": "TRUE",
+			Totaal: "€ 0,00",
 			"Confirmation Email Sent": "",
 		};
 		assert.strictEqual(shouldSendConfirmation(user), false);
@@ -286,6 +297,7 @@ describe("shouldSendConfirmation", () => {
 	it("should return true when payment completed even if confirmation already sent (dedup handled by emailColumn guard)", () => {
 		const user = {
 			"Bedrag voldaan": "TRUE",
+			Totaal: "€ 50,00",
 			"Confirmation Email Sent": "2024-01-01",
 		};
 		assert.strictEqual(shouldSendConfirmation(user), true);
